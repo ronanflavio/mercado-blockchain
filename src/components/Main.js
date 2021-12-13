@@ -78,7 +78,12 @@ class Main extends Component {
                           Comprar
                       </button>
                     :
-                      null
+                      <button
+                        name={product.id}
+                        value={product.price}
+                        >
+                          Editar
+                      </button>
                     }
                   </td>
                 </tr>
