@@ -10,7 +10,8 @@ class Main extends Component {
           event.preventDefault()
           const name = this.productName.value
           const price = window.web3.utils.toWei(this.productPrice.value.toString(), 'Ether')
-          this.props.createProduct(name, price)
+          const onSale = this.productOnSale.checked
+          this.props.createProduct(name, price, onSale)
         }}>
           <div className="form-group mr-sm-2">
             <input
@@ -30,6 +31,16 @@ class Main extends Component {
               placeholder="Preço do produto (em Ether)"
               required />
           </div>
+          <div className="form-group form-check mr-sm-2">
+            <input
+              id="productOnSale"
+              type="checkbox"
+              ref={(input) => { this.productOnSale = input }}
+              className="form-check-input" />
+            <label className="form-check-label" for="productOnSale">
+              Produto a venda
+            </label>
+          </div>
           <button type="submit" className="btn btn-primary">Adicionar produto</button>
         </form>
         <p>&nbsp;</p>
@@ -40,21 +51,24 @@ class Main extends Component {
               <th scope="col">#</th>
               <th scope="col">Nome</th>
               <th scope="col">Preço</th>
+              <th scope="col">Status</th>
               <th scope="col">Proprietário</th>
               <th scope="col"></th>
             </tr>
           </thead>
           <tbody id="productList">
-            {this.props.products.map((product, key) => {
+            {this.props.products.filter(f => f.onSale || this.props.account === f.owner).map((product, key) => {
               return (
                 <tr key={key}>
                   <th scope="row">{product.id.toString()}</th>
                   <td>{product.name}</td>
                   <td>{window.web3.utils.fromWei(product.price.toString(), "ether")} Eth</td>
+                  <td>{product.onSale ? 'A venda' : 'Não a venda'}</td>
                   <td>{product.owner}</td>
                   <td>
-                    {!product.purchased
-                      ? <button
+                    {this.props.account !== product.owner
+                    ?
+                      <button
                         name={product.id}
                         value={product.price}
                         onClick={(event) => {
@@ -62,8 +76,9 @@ class Main extends Component {
                         }}
                         >
                           Comprar
-                        </button>
-                      : null
+                      </button>
+                    :
+                      null
                     }
                   </td>
                 </tr>

@@ -11,6 +11,7 @@ struct Product {
   uint price;
   address payable owner;
   bool purchased;
+  bool onSale;
 }
 
 event ProductCreated (
@@ -18,7 +19,8 @@ event ProductCreated (
   string name,
   uint price,
   address payable owner,
-  bool purchased
+  bool purchased,
+  bool onSale
 );
 
 event ProductPurchased (
@@ -26,13 +28,20 @@ event ProductPurchased (
   string name,
   uint price,
   address payable owner,
-  bool purchased
+  bool purchased,
+  bool onSale
 );
+
+event ProductPriceUpdated (
+  uint id,
+  uint price
+);
+
   constructor() public {
     name = "Dapp University Marketplace";
   }
 
-  function createProduct(string memory _name, uint _price) public {
+  function createProduct(string memory _name, uint _price, bool _onSale) public {
     //Require a name
     require(bytes(_name).length > 0, "Enter a valid name");
     //Requiere a valid price
@@ -40,9 +49,24 @@ event ProductPurchased (
     //Increment product count
     productCount++;
     //Create the product
-    products[productCount] = Product(productCount, _name, _price, msg.sender, false);
+    products[productCount] = Product(productCount, _name, _price, msg.sender, false, _onSale);
     //Trigger an event
-    emit ProductCreated(productCount, _name, _price, msg.sender, false);
+    emit ProductCreated(productCount, _name, _price, msg.sender, false, _onSale);
+  }
+
+  function updatePrice(uint _id, uint _price) public {
+    //Fetch the product and make a copy of it
+    Product memory _product = products[_id];
+    //Requiere a valid price
+    require(_price > 0, "Enter a valid price");
+    // Require that only owner update the product price
+    require(_product.owner == msg.sender, "You do not have permissions to edit this product");
+    // Update product price
+    _product.price = _price;
+    //Update the product
+    products[_id] = _product;
+    //Trigger an event
+    emit ProductPriceUpdated(_product.id, _price);
   }
 
   function purchaseProduct(uint _id) public payable {
@@ -54,10 +78,10 @@ event ProductPurchased (
     require(_product.id > 0 && _product.id <= productCount, "Enter valid id");
     //Require that there is enough Ether in the transaction
     require(msg.value >= _product.price,"Transfer the correct amount");
-    //Require that the product has not been purchased already
-    require(!_product.purchased, "Product has been purchased");
     //Require that the buyer is not the seller
     require(msg.sender != _seller, "Buyer cannot be seller");
+    //Require that the product is on sale
+    require(_product.onSale, "This product is not on sale");
     //Transfer ownership to the buyer
     _product.owner = msg.sender;
     //Mark as purchased
@@ -67,6 +91,6 @@ event ProductPurchased (
     //Pay the seller by sending them Ether
     address(_seller).transfer(msg.value);
     //Trigger an event
-    emit ProductPurchased(productCount, _product.name, _product.price, msg.sender, true);
+    emit ProductPurchased(productCount, _product.name, _product.price, msg.sender, true, _product.onSale);
   }
 }
