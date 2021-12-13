@@ -32,9 +32,10 @@ event ProductPurchased (
   bool onSale
 );
 
-event ProductPriceUpdated (
+event ProductUpdated (
   uint id,
-  uint price
+  uint price,
+  bool onSale
 );
 
   constructor() public {
@@ -54,7 +55,7 @@ event ProductPriceUpdated (
     emit ProductCreated(productCount, _name, _price, msg.sender, false, _onSale);
   }
 
-  function updatePrice(uint _id, uint _price) public {
+  function updateProduct(uint _id, uint _price, bool _onSale) public {
     //Fetch the product and make a copy of it
     Product memory _product = products[_id];
     //Requiere a valid price
@@ -63,10 +64,12 @@ event ProductPriceUpdated (
     require(_product.owner == msg.sender, "You do not have permissions to edit this product");
     // Update product price
     _product.price = _price;
+    // Update product on sale
+    _product.onSale = _onSale;
     //Update the product
     products[_id] = _product;
     //Trigger an event
-    emit ProductPriceUpdated(_product.id, _price);
+    emit ProductUpdated(_product.id, _price, _onSale);
   }
 
   function purchaseProduct(uint _id) public payable {
