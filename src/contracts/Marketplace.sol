@@ -4,6 +4,7 @@ contract Marketplace {
   string public name;
   uint public productCount=0;
   mapping(uint => Product) public products;
+  address payable contractOwner;
 
 struct Product {
   uint id;
@@ -40,6 +41,7 @@ event ProductUpdated (
 
   constructor() public {
     name = "Dapp University Marketplace";
+    contractOwner = msg.sender;
   }
 
   function createProduct(string memory _name, uint _price, bool _onSale) public {
@@ -91,8 +93,12 @@ event ProductUpdated (
     _product.purchased = true;
     //Update the product
     products[_id] = _product;
+    //Calculates the fee value for the contract owner
+    uint fee =  (5 * _product.price) / 100;
+    //Transfer the fee to the contract owner
+    address(contractOwner).transfer(fee);
     //Pay the seller by sending them Ether
-    address(_seller).transfer(msg.value);
+    address(_seller).transfer(msg.value - fee);
     //Trigger an event
     emit ProductPurchased(productCount, _product.name, _product.price, msg.sender, true, _product.onSale);
   }
