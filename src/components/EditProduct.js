@@ -46,9 +46,9 @@ class EditProduct extends Component {
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.props.hide}>
+            <button className="btn btn-secondary" type="button" onClick={this.props.hide}>
               Cancelar
-            </Button>
+            </button>
             <button className="btn btn-primary" type="submit">
               Atualizar produto
             </button>
