@@ -1,8 +1,19 @@
 import React, { Component } from 'react';
+import EditProduct from './EditProduct';
 
 class Main extends Component {
 
+  state = {
+    isOpen: false,
+    product: null
+  };
+
+  openModal = () => this.setState({isOpen: true});
+  closeModal = () => this.setState({isOpen: false});
+  setProduct = (prodcut) => this.setState({product: prodcut})
+
   render() {
+
     return (
       <div id="content">
         <h1>Adicionar Produto</h1>
@@ -81,6 +92,10 @@ class Main extends Component {
                       <button
                         name={product.id}
                         value={product.price}
+                        onClick={() => {
+                          this.setProduct(product)
+                          this.openModal()
+                        }}
                         >
                           Editar
                       </button>
@@ -91,7 +106,19 @@ class Main extends Component {
             })}
           </tbody>
         </table>
-        <p><a href="https://ropsten.etherscan.io/address/0x781c71bfe45d1c5d81fca75d17bb589cc72d63fc" target="_blank">Informação do contrato</a></p>
+        <p>
+          <a href="https://ropsten.etherscan.io/address/0x781c71bfe45d1c5d81fca75d17bb589cc72d63fc" target="_blank">
+            Informação do contrato
+          </a>
+        </p>
+
+        <EditProduct
+          show={this.state.isOpen}
+          product={this.state.product}
+          hide={this.closeModal}
+          submit={this.props.updateProduct}
+        />
+
       </div>
     );
   }
