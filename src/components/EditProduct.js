@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Modal } from 'react-bootstrap';
-import Form from 'react-bootstrap/FormGroup';
+import { Modal } from 'react-bootstrap';
 
 class EditProduct extends Component {
 
