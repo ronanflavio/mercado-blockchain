@@ -13,7 +13,7 @@ class EditProduct extends Component {
           event.preventDefault()
           const id = this.props.product ? this.props.product.id : null
           const price = window.web3.utils.toWei(this.productPrice.value.toString(), 'Ether')
-          const onSale = this.productOnSale.checked
+          const onSale = this.productOnSaleEdit.checked
           this.props.submit(id, price, onSale)
         }}>
           <Modal.Header closeButton>
@@ -35,12 +35,12 @@ class EditProduct extends Component {
             </div>
             <div className="form-group form-check mr-sm-2">
               <input
-                id="productOnSale"
+                id="productOnSaleEdit"
                 type="checkbox"
-                ref={(input) => { this.productOnSale = input }}
+                ref={(input) => { this.productOnSaleEdit = input }}
                 defaultChecked={this.props.product ? this.props.product.onSale : false}
                 className="form-check-input" />
-              <label className="form-check-label" for="productOnSale">
+              <label className="form-check-label" for="productOnSaleEdit">
                 Produto a venda
               </label>
             </div>
