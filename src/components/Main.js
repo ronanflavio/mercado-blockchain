@@ -80,6 +80,7 @@ class Main extends Component {
                     {this.props.account !== product.owner
                     ?
                       <button
+                        className="btn btn-primary"
                         name={product.id}
                         value={product.price}
                         onClick={(event) => {
@@ -90,6 +91,7 @@ class Main extends Component {
                       </button>
                     :
                       <button
+                        className="btn btn-secondary"
                         name={product.id}
                         value={product.price}
                         onClick={() => {
@@ -107,7 +109,7 @@ class Main extends Component {
           </tbody>
         </table>
         <p>
-          <a href="https://ropsten.etherscan.io/address/0x781c71bfe45d1c5d81fca75d17bb589cc72d63fc" target="_blank">
+          <a href="https://rinkeby.etherscan.io/address/0xf3aF2F928817B25B0D41D0cc30783bF604690DBE" target="_blank">
             Informação do contrato
           </a>
         </p>
